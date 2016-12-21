@@ -1,49 +1,91 @@
-$(document).ready(function(){
-	var myGoods = new Goods('table1');
-	// 搜索
-	$(".J-search").click(function(){
-		var shopName = $(".J-shop-name").val().trim(),
-			goodsName = $(".J-goods-name").val().trim();
-			
-		myGoods.search(shopName, goodsName);
-	});
-	// 添加
-	$(".J-add").click(function(){
-		$("#modal-add").fadeIn(200);
-	});
-	// 确认添加
-	$(".J-add-submit").click(function(){
-		var formData = {
-			shopName: $(".J-add-shopName").val().trim(),
-			goodsName: $(".J-add-goodsName").val().trim()
-		};
-		myGoods.add(formData, function(){
+// 搜索
+var search = new Vue({
+		el: '#searchGoods',
+		data: {
+			shopNameS: '',
+			goodsNameS: ''
+		}
+
+		methods: {
+			searchGoods: function() {
+				myGoods.search(shopNameS, goodsNameS);
+
+			}
+		}
+	})
+	//addButton
+var addButton = new Vue({
+	el: '#addGoodsButton',
+	methods: {
+		function addFadein() {
+			$("#modal-add").fadeIn(200);
+		}
+	}
+})
+
+//add
+var add = new Vue({
+	el: '#addGoods'
+	data: {
+		shopNameAdd: '',
+		goodsNameAdd: ''
+	}
+	methods: {
+		function addCancel() {
+			$(".modal").fadeOut(200);
+		}
+
+		function addSure() {
+myGoods.add(this.data, function(){
 			$("#modal-add").fadeOut(200);
 		});
-	});
-	// 修改
-	var goods_id;
-	$("body").on("click", ".J-update", function(){
-		var that = $(this);
-		goods_id = that.attr('data-id');
-		$(".J-update-shopName").val(that.attr('data-shopname'));
-		$(".J-update-goodsName").val(that.attr('data-goodsname'));
 		
-		$("#modal-update").fadeIn(200);
-	});
-	// 确认修改
-	$(".J-update-submit").click(function(){
-		var formData = {
-			id: goods_id,
-			shopName: $(".J-update-shopName").val().trim(),
-			goodsName: $(".J-update-goodsName").val().trim()
-		};
-		myGoods.update(formData, function(){
+		}
+	}
+})
+
+//modifyButton
+var modifyButton = new Vue({
+	el: '#table1',
+	methods: {
+		function modifyFadein() {
+			$("#modal-update").fadeIn(200);
+		}
+	}
+})
+
+//modify
+var modify = new Vue({
+	el: '#modifyGoods'
+	data: {
+		shopNameMo: '',
+		goodsNameMo: ''
+	}
+	methods: {
+		function addCancel() {
+			$(".modal").fadeOut(200);
+		}
+
+		function addSure() {
+
 			$("#modal-update").fadeOut(200);
-		});
-	});
-	// 取消
-	$(".J-cancel").click(function(){
-		$(".modal").fadeOut(200);
-	});
-});
+		}
+	}
+})
+
+//render
+var render = new Vue({
+	el: '#table1',
+	data: {
+		goodsList: renderList
+	},
+	methods: {
+		seen: function() {
+			if (renderList.length == 0) {
+				return 'sorry,there is no matched goods'
+			} else {
+				return
+			}
+		}
+	}
+})
