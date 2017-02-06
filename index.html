@@ -8,23 +8,23 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<div class="wrapper">
+	<div class="wrapper" id='together'>
 		<div class="main">
-			<div class="filter-wrap" id='searchGoods'>
+			<div class="filter-wrap" >
 				<div class="form-wrap">
 					<label>店铺名称：</label>
-					<input type="text" class="form-control J-shop-name" placeholder="请输入店铺名称" v-model='shopNameS'/>
+					<input type="text" class="form-control J-shop-name" placeholder="请输入店铺名称" v-model='searchFormData.shopName'/>
 				</div>
 				<div class="form-wrap">
 					<label>商品名称：</labe>
-					<input type="text" class="form-control J-goods-name" placeholder="请输入商品名称" v-model='goodsNameS' />
+					<input type="text" class="form-control J-goods-name" placeholder="请输入商品名称" v-model='searchFormData.goodsName' />
 				</div>
-				<button class="btn btn-primary J-search" v-on:click='searchGoods'>搜索</button>
+				<button class="btn btn-primary J-search" v-on:click='fetchTableList'>搜索</button>
 			</div>
 
 			<div class="table-wrap">
-				<div class="table-header" id="addGoodsButton">
-					<button class="btn btn-default J-add" v-bind:click="addFadein">添加商品</button>
+				<div class="table-header" >
+					<button class="btn btn-default J-add" v-on:click="addFadein">添加商品</button>
 				</div>
 				<div class="table-body">
 					<table id="table1">
@@ -37,29 +37,28 @@
 							</tr>
 						</thead>
 						<tbody >
-							<tr v-for='(item,index) in goodsList'>
+							<tr v-if='tableList.length>0' v-for='(item,index) in tableList'>
 								<td v-text='index+1'></td>
-								<td v-text='item.goodsName'></td>
 								<td v-text='item.shopName'></td>
+								<td v-text='item.goodsName'></td>
 								<td>
-									<button v-on:click='modifyFadein'>modify</button>
+									<a href="javascript:void(0);" @click="modifyFadein(item)">修改</a>
 								</td>
 							</tr>
-							<tr>
-								<td colspan='4' >{{seen()}}</td>
-
+							<tr v-if="tableList.length<=0">
+								<td colspan="100">没有符合条件的结果～</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
-	</div> 
+	
 
 
 	<!-- 添加商品 -->
 	<div class="modal" id="modal-add">
-		<div class="modal-content" id="addGoods">
+		<div class="modal-content" >
 			<div class="modal-header">
 				<h4>添加商品</h4>
 			</div>
@@ -67,24 +66,24 @@
 				<div class="form-offset">
 					<div class="form-wrap">
 						<label>店铺名称：</label>
-						<input type="text" class="form-control J-add-shopName" placeholder="请输入店铺名称" v-model='shopNameAdd'/>
+						<input type="text" class="form-control J-add-shopName" placeholder="请输入店铺名称" v-model='addFormData.shopName'/>
 					</div>
 					<div class="form-wrap">
 						<label>商品名称：</labe>
-						<input type="text" class="form-control J-add-goodsName" placeholder="请输入商品名称" v-model='goodsNameAdd'/>
+						<input type="text" class="form-control J-add-goodsName" placeholder="请输入商品名称" v-model='addFormData.goodsName'/>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary J-add-submit" v-on:click='addSure'>确定</button>
-				<button class="btn btn-default J-cancel" v-on:click='addCancel'>取消</button>
+				<button class="btn btn-default J-cancel" v-on:click='Cancel'>取消</button>
 			</div>
 		</div>
 	</div>
 
 	<!-- 修改商品 -->
 	<div class="modal" id="modal-update">
-		<div class="modal-content" id="modifyGoods">
+		<div class="modal-content" >
 			<div class="modal-header">
 				<h4>编辑商品</h4>
 			</div>
@@ -92,20 +91,21 @@
 				<div class="form-offset">
 					<div class="form-wrap">
 						<label>店铺名称：</label>
-						<input type="text" class="form-control J-update-shopName" placeholder="请输入店铺名称" v-model='shopNameMo' />
+						<input type="text" class="form-control J-update-shopName" placeholder="请输入店铺名称" v-model='modifyFormData.shopName' />
 					</div>
 					<div class="form-wrap">
 						<label>商品名称：</labe>
-						<input type="text" class="form-control J-update-goodsName" placeholder="请输入商品名称" v-model='goodsNameMo' />
+						<input type="text" class="form-control J-update-goodsName" placeholder="请输入商品名称" v-model='modifyFormData.goodsName' />
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary J-update-submit" v-on:click='modifyCancel'>确定</button>
-				<button class="btn btn-default J-cancel" v-on:click='modifyCancel'>取消</button>
+				<button class="btn btn-primary J-update-submit" v-on:click='modifySure'>确定</button>
+				<button class="btn btn-default J-cancel" v-on:click='Cancel'>取消</button>
 			</div>
 		</div>
 	</div>
+</div>
 
 	<script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
 	

@@ -59,34 +59,13 @@
 				goodsName: _goodsName
 			},
 			success: function(res) {
-				that.goodsList = res.data;
-
-				that.renderTable(that.goodsList);
+				
+				vm.goodsList=res.data
 			}
 		});
 	}
 
 	// 渲染表格
 
-
-		var vm = new Vue({
-			el: '#table1',
-			data: {
-				goodsList: renderList
-			},
-			methods: {
-				seen: function() {
-					if (renderList.length == 0) {
-						return 'sorry,there is no matched goods'
-					} else {
-						return
-					}
-				}
-			}
-		})
-	
-
-
-
 	window.Goods = Goods;
-})(window);+
+})(window)

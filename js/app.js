@@ -1,91 +1,78 @@
-// 搜索
-var search = new Vue({
-		el: '#searchGoods',
+$(document).ready(function() {
+	var host = "http://localhost:3001/";
+	var vm = new Vue({
+		el: '#together',
+		mounted: function() {
+			this.fetchTableList();
+		},
 		data: {
-			shopNameS: '',
-			goodsNameS: ''
-		}
-
+			searchFormData: {
+				shopName: '',
+				goodsName: ''
+			},
+			addFormData: {
+				shopName: '',
+				goodsName: ''
+			},
+			modifyFormData: {
+				id:'',
+				shopName: '',
+				goodsName: ''
+			},
+			tableList:[]
+		},
 		methods: {
-			searchGoods: function() {
-				myGoods.search(shopNameS, goodsNameS);
+			fetchTableList: function() {
+				var self = this;
+				$.ajax({
+					url: host + 'goods/search',
+					type: 'post',
+					data: self.searchFormData,
+					success: function(res) {
+						self.tableList = res.data;
+					}
+				})
+			},
 
+			addFadein: function() {
+				$("#modal-add").fadeIn(200);
+			},
+
+			addSure: function() {
+				var self = this;
+				$.ajax({
+					url: host + 'goods/add',
+					type: 'post',
+					data: self.addFormData,
+					success: function() {
+						self.fetchTableList();
+						$("#modal-add").fadeOut(200);
+					}
+				});
+			},
+			modifyFadein: function(goods) {
+				this.modifyFormData.id = goods._id;
+				this.modifyFormData.shopName = goods.shopName;
+				this.modifyFormData.goodsName = goods.goodsName;
+				$("#modal-update").fadeIn(200);
+			},
+			modifySure: function() {
+				var self = this;
+
+				$.ajax({
+					url: host + 'goods/edit',
+					type: "post",
+					data: self.modifyFormData,
+					success: function() {
+						self.fetchTableList();
+						$("#modal-update").fadeOut(200);
+					}
+				});
+
+			},
+			Cancel: function() {
+				$(".modal").fadeOut(200);
 			}
 		}
-	})
-	//addButton
-var addButton = new Vue({
-	el: '#addGoodsButton',
-	methods: {
-		function addFadein() {
-			$("#modal-add").fadeIn(200);
-		}
-	}
-})
-
-//add
-var add = new Vue({
-	el: '#addGoods'
-	data: {
-		shopNameAdd: '',
-		goodsNameAdd: ''
-	}
-	methods: {
-		function addCancel() {
-			$(".modal").fadeOut(200);
-		}
-
-		function addSure() {
-myGoods.add(this.data, function(){
-			$("#modal-add").fadeOut(200);
-		});
-		
-		}
-	}
-})
-
-//modifyButton
-var modifyButton = new Vue({
-	el: '#table1',
-	methods: {
-		function modifyFadein() {
-			$("#modal-update").fadeIn(200);
-		}
-	}
-})
-
-//modify
-var modify = new Vue({
-	el: '#modifyGoods'
-	data: {
-		shopNameMo: '',
-		goodsNameMo: ''
-	}
-	methods: {
-		function addCancel() {
-			$(".modal").fadeOut(200);
-		}
-
-		function addSure() {
-
-			$("#modal-update").fadeOut(200);
-		}
-	}
-})
-
-//render
-var render = new Vue({
-	el: '#table1',
-	data: {
-		goodsList: renderList
-	},
-	methods: {
-		seen: function() {
-			if (renderList.length == 0) {
-				return 'sorry,there is no matched goods'
-			} else {
-				return
-			}
-		}
-	}
-})
+	});
+});
